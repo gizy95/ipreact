@@ -1,76 +1,47 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
+
 
 
 function App() {
 
-  const api = import.meta.env.VITE_KEY
-  const [data, setData] = useState({
-    "ip": "47.63.220.6",
-    "location": {
-      "country": "Es",
-      "region": "Comunidad de Madrid",
-      "city": "Los Angeles",
-      "lat": 40.35579,
-      "lng": -3.69914,
-      "postalCode": "",
-      "timezone": "+01:00",
-      "geonameId": 11550023
-    },
-    "as": {
-      "asn": 12430,
-      "name": "VODAFONE_ES",
-      "route": "47.63.0.0/16",
-      "domain": "http://www.vodafone.es/",
-      "type": "Cable/DSL/ISP"
-    },
-    "isp": "Vodafone Global Enterprise Inc.",
-    "proxy": {
-      "proxy": false,
-      "vpn": false,
-      "tor": false
-    }
-  })
+
+  const [data, setData] = useState({})
   const [country, setCountry] = useState(null)
   const [loading, setLoading] = useState(false);
+  const url = `https://geo.ipify.org/api/v2/country,city?apiKey=${import.meta.env.VITE_KEY}`
 
-  const url = `https://geo.ipify.org/api/v2/country,city?apiKey=${api}`
-  const url2 = `https://restcountries.com/v3.1/alpha?codes=${data.location.country}`;
 
-  // const getData = async () => {
-  //   try {
-  //     const response = await fetch(url);
-  //     const data = await response.json();
-  //     setData(data)
-  //   } catch (error) {
-  //     console.error("Error fetching data: ", error);
-  //   } finally {
-  //     setLoading(true);
-
-  //   }
-
-  // }
-
-  const getCountry = async () => {
+  const getData = async () => {
     try {
-      const response = await fetch(url2);
+      const response = await fetch(url);
       const data = await response.json();
-      setCountry(data)
+      setData(data);
+
+
+      const url2 = `https://restcountries.com/v3.1/alpha?codes=${data.location.country}`;
+
+      try {
+        const response2 = await fetch(url2);
+        const data2 = await response2.json();
+        setCountry(data2);
+      } catch (error) {
+        console.error("Error fetching data from the second URL: ", error);
+      }
+
     } catch (error) {
-      console.error("Error fetching data: ", error);
+      console.error("Error fetching data from the first URL: ", error);
     } finally {
       setLoading(true);
-      console.log(country);
-
     }
-
   }
 
+
   useEffect(() => {
-    //getData();
-    getCountry();
+    getData();
+
   }, [])
 
   console.log(data);
@@ -93,17 +64,18 @@ function App() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               <Marker position={[data.location.lat, data.location.lng]}>
-                <Popup>
-                  A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
+
               </Marker>
             </MapContainer>
           </div >
 
           <div className='card-info'>
-            <h2>{country[0].name.common}</h2>
-            <h2>{country[0].capital}</h2>
-            <img src={country[0].flags.png}></img>
+            <h2>Country : {country[0].name.common}</h2>
+            <img src={country[0].flags.png} alt="flag" />
+            <p>Capital : {country[0].capital}</p>
+            <p>Population : {country[0].population}</p>
+            <p>Area : {country[0].area} km²</p>
+
           </div>
         </div >
       ) : (<h2>Loading.......</h2>)
