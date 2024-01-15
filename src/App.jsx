@@ -13,6 +13,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const url = `https://geo.ipify.org/api/v2/country,city?apiKey=${api_key}`
 
+  console.log(api_key);
+
 
   const getData = async () => {
     try {
