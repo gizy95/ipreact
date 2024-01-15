@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css';
 
 
 function App() {
- const api_key = import.meta.env.VITE_KEY;
+ const api_key = import.meta.env.VITE_REACT_KEY;
 
   const [data, setData] = useState({})
   const [country, setCountry] = useState(null)
