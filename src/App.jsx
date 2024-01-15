@@ -6,12 +6,12 @@ import 'leaflet/dist/leaflet.css';
 
 
 function App() {
-
+ const api_key = import.meta.env.VITE_KEY;
 
   const [data, setData] = useState({})
   const [country, setCountry] = useState(null)
   const [loading, setLoading] = useState(false);
-  const url = `https://geo.ipify.org/api/v2/country,city?apiKey=${import.meta.env.VITE_KEY}`
+  const url = `https://geo.ipify.org/api/v2/country,city?apiKey=${api_key}`
 
 
   const getData = async () => {
